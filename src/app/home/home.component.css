@@ -1,0 +1,44 @@
+
+.analyzeData{
+    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    padding: 3%;
+}
+
+  tr.hide-table-padding td {
+    padding: 0;
+  }
+  .register{
+    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    padding: 3%;
+  }
+  
+  .expand-button {
+    position: relative;
+  }
+  
+  .accordion-toggle .expand-button:after
+  {
+    position: absolute;
+    left:.75rem;
+    top: 50%;
+    transform: translate(0, -50%);
+    content: '';
+  }
+  .accordion-toggle.collapsed .expand-button:after
+  {
+    content: '';
+  }
+
+  .overlay {
+    position:fixed;
+    background-color: rgba(255,255,255,0.7);
+    z-index:9999;
+    background: none;
+    height: 50px;
+    width: 50px;
+    /* width:100%;
+    left:0;right:0;top:0;bottom:0;
+    background-color: rgba(255,255,255,0.7);
+    z-index:9999; */
+    /* display:none; */
+}   
