@@ -6,6 +6,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SortTablePipe } from '../sort-table.pipe';
+import { FileDropDirective, FileSelectDirective} from 'ng2-file-upload';
 
 const routes: Routes = [
   { path: '', component: HomeComponent }
