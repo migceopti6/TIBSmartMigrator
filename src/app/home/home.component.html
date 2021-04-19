@@ -12,7 +12,7 @@
     <p style="color: white">Please Wait... </p>  
 </ngx-spinner>  -->
 <div>
-    <h1 style="width:100%;height:90px;text-align: right;color:#052F87;margin-top: 50px;width: 100%;padding-right: 8%;"><b>Cognizant</b></h1>
+    <h1 style="width:100%;height:50px;text-align: right;color:#052F87;margin-top: 5px;width: 100%;padding-right: 8%;"><b>Cognizant</b></h1>
 </div>
 <div class="container register">
     <div class="row">
@@ -180,8 +180,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="radio inline"> 
-                                        <input style="margin-left: 20px;" type="radio" ngModel name="bwArtifact" value="bwce" required>
-                                        <span>BWCE Artifact</span> 
+                                        <input type="radio" ngModel name="bwArtifact" value="bwce" required>
+                                        <span style="margin-left: 5px;">BWCE Artifact</span> 
                                     </label>
                                 </div>
                             </div>
@@ -221,28 +221,28 @@
         <div class="col-md-3 register-left">
         </div>
         <div class="col-md-9 register-right">
-            <div style="text-align: center;margin-top: 30px;"><p>Analyzer Report : <a (click)="download(reportLocation)" style="color: blue !important; text-decoration-line: underline;cursor: pointer;">{{analyzerReportPath}}<i style="margin-left: 5px;" class="fa fa-download"></i></a></p></div>
+            <div style="text-align: center;margin-top: 30px;"><p>Migration Compatibility Report : <a (click)="download(reportLocation)" style="color: blue !important; text-decoration-line: underline;cursor: pointer;"><b>{{analyzerReportPath}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></p></div>
             <div class="table-responsive" style="margin-left: 90px;width: 80%;margin-bottom: 10px;height: 500px;margin-top: 40px;" >
                 <table class="table">
                     <thead>
-                      <tr class="accordion-toggle collapsed" style="border: 1px solid black;;text-align: center;height: 50px;">
+                      <tr class="accordion-toggle collapsed" style="border: 1px solid black;;text-align: center;height: 55px;">
                        <div class="row">
                            <div class="rowData"><b>Activity Group</b></div>
                            <div class="rowData"><b>Activity Name</b></div>
                            <div class="rowData"><b>Count</b></div>
-                           <div style="width: 25%;padding-top: 10px;height: 50px;overflow: hidden;"><b>Compatibility</b></div>
+                           <div style="width: 25%;padding-top: 10px;height: 55px;overflow: hidden;"><b>Migration Compatibility</b></div>
                        </div>
                        </tr>
                     </thead>
                     <tbody>
-                      <tr class="accordion-toggle collapsed" style="border: 0.5px solid black;;text-align: center;height: 50px;" *ngFor="let value of (values | sortTable); index as i" (click)="expandRow(i,value.Compatibility[0])" [ngStyle]="{'backgroundColor': value.Compatibility[0] == 'true' ? 'rgb(130 208 147)' : 'rgb(228 131 131)' }">
+                      <tr class="accordion-toggle collapsed" style="border: 0.5px solid black;;text-align: center;height: 55px;" *ngFor="let value of (values | sortTable); index as i" (click)="expandRow(i,value.Compatibility[0])" [ngStyle]="{'backgroundColor': value.Compatibility[0] == 'true' ? 'rgb(130 208 147)' : 'rgb(228 131 131)' }">
                             <div class="row" >
-                                <div class="rowData"><i *ngIf="value.Compatibility[0] == 'false'" [ngClass]="isExpanded ? 'fa fa-plus' : 'fa fa-minus'" aria-hidden="true" style="margin-right: 20px;"></i>{{ value.ActivityGroup[0] }}</div>
+                                <div class="rowData"><i *ngIf="value.Compatibility[0] == 'false'" [ngClass]="checkExpanded(i) ? 'fa fa-minus' : 'fa fa-plus'" aria-hidden="true" style="margin-right: 10px;"></i>{{ value.ActivityGroup[0] }}</div>
                                 <div class="rowData">{{ value.ActivityName[0] }}</div>
                                 <div class="rowData">{{ value.Count[0] }}</div>
                                 <div style="width: 25%;padding-top: 10px;height: 50px;overflow: hidden;">{{ value.Compatibility[0] }}</div>
                             </div>
-                           <div style="height: 20px;padding: 20px;background-color: rgb(11 189 140 / 18%);text-align: center;padding-bottom: 50px;" *ngIf="i === expandedIndex">Suggested Activity :- <b>{{ value.SuggestedActivity[0] }}</b></div>
+                           <div style="height: 20px;padding: 20px;background-color: rgb(11 189 140 / 18%);text-align: center;padding-bottom: 50px;" *ngIf="checkExpanded(i)">Suggested Activity :- <b>{{ value.SuggestedActivity[0] }}</b></div>
                        </tr>
                     </tbody>
                 </table>
@@ -262,11 +262,11 @@
                         <tr style="border: 1px solid black;;text-align: center;height: 80px;">
                          <div class="row">
                              <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Status</b></div>
-                             <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;">{{values["ns0:response"]["ns0:status"][0]}}</div>
+                             <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;" [ngClass]="[(values['ns0:response']['ns0:status'][0] == 'SUCCESS')  ? 'text-success' : 'text-danger']"><b>{{values["ns0:response"]["ns0:status"][0]}}</b></div>
                           </div>
                           <div class="row">
-                             <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;"><b>Generated Location</b></div>
-                             <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;"><a (click)="download(values['ns0:response']['ns0:projectLocation'][0])" style="color: blue !important; text-decoration-line: underline;cursor: pointer;">{{getFilename(values["ns0:response"]["ns0:projectLocation"][0])}}<i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
+                             <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;"><b>Deployment Artifact</b></div>
+                             <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;"><a (click)="download(values['ns0:response']['ns0:projectLocation'][0])" style="color: blue !important; text-decoration-line: underline;cursor: pointer;"><b>{{getFilename(values["ns0:response"]["ns0:projectLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
                           </div>
                        </tr>
                      </tbody>
@@ -287,19 +287,19 @@
                        <tr style="border: 1px solid black;;text-align: center;height: 80px;">
                         <div class="row">
                             <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Status</b></div>
-                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;">{{values["ns0:response"]["ns0:status"][0]}}</div>
+                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"  [ngClass]="[(values['ns0:response']['ns0:status'][0] == 'SUCCESS')  ? 'text-success' : 'text-danger']"><b>{{values["ns0:response"]["ns0:status"][0]}}</b></div>
                          </div>
-                         <div class="row">
+                         <div class="row" *ngIf="!!values['ns0:response']['ns0:projectLocation']">
                             <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Migrated Code</b></div>
-                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:projectLocation'][0])">{{getFilename(values["ns0:response"]["ns0:projectLocation"][0])}}<i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
+                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:projectLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:projectLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
                          </div>
-                         <div class="row">
+                         <div class="row"  *ngIf="!!values['ns0:response']['ns0:codeCleanUpReportLocation']">
                             <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black; word-wrap: break-word;"><b>Code Cleanup Report</b></div>
-                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:codeCleanUpReportLocation'][0])">{{getFilename(values['ns0:response']['ns0:codeCleanUpReportLocation'][0])}}<i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
+                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:codeCleanUpReportLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:codeCleanUpReportLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
                          </div>
-                         <div class="row">
+                         <div class="row" *ngIf="!!values['ns0:response']['ns0:folderOptimizedReportLocation']">
                             <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;word-wrap: break-word;"><b>Folder Optimization Report</b></div>
-                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:folderOptimizedReportLocation'][0])">{{getFilename(values['ns0:response']['ns0:folderOptimizedReportLocation'][0])}}<i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
+                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:folderOptimizedReportLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:folderOptimizedReportLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
                          </div>
                       </tr>
                     </tbody>

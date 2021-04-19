@@ -28,9 +28,7 @@ export class HomeComponent {
   
     analyzerPathLocation:string ="";
     analyzerCompatibility:string ="";
-    showIndex:number = 0;
-    public expandedIndex:number;
-    isExpanded:boolean = true;
+    expandedRows:Array<Number> =[];
     profileName:string ="default";
     isActive:string = "";
     analyzerPath:string=null;
@@ -41,14 +39,13 @@ export class HomeComponent {
     selectedGeneratorFile:File;
     analyzerReportPath:string;
     reportLocation:any;
-    public URLG = 'http://54.85.113.141:8181/integration-framework-0.0.1-SNAPSHOT/api/v1/deploymentDetails';
     public ANALYZER_URL = 'http://localhost:19093';
     public GENERATOR_URL = 'http://localhost:19092';
     public MIGRATOR_URL = 'http://localhost:19091';
     public FILE_UPLOAD_PATH = "C:/TibSmartMigrator/migration/upload/";
     public FILE_UPLOAD_URL = "http://localhost:3001/upload";
-
-    constructor(private userService: UserService,public spinnerService: NgxSpinnerService,private authenticationService: AuthenticationService, public router:Router,public http: HttpClient) { this.expandedIndex=-1; }
+    public FILE_DOWNLOAD_URL = "http://localhost:3001/download/"
+    constructor(private userService: UserService,public spinnerService: NgxSpinnerService,private authenticationService: AuthenticationService, public router:Router,public http: HttpClient) {}
 
     ngOnInit() {
         this.userService.getAll().pipe(first()).subscribe(users => {
@@ -56,12 +53,24 @@ export class HomeComponent {
         });
         this.spinnerService.hide();
     }
-    expandRow(index: number,value:string): void {
-        if(value == 'false'){
-           this.expandedIndex = index === this.expandedIndex ? -1 : index;
-           this.isExpanded = !!this.expandedIndex;
-        }
+ 
+  expandRow(index: number,value:string): void {
+    if(value == 'false'){
+      if(!this.expandedRows.includes(index)) {
+        let i = index;
+        this.expandedRows.push(i);
+      }else{
+        const value: number = this.expandedRows.indexOf(index);
+        this.expandedRows.splice(value,1);
+      }
+      console.log(this.expandedRows);
     }
+  }
+
+  checkExpanded(index){
+      console.log("Array contains index "+index+" value : "+this.expandedRows.includes(index));
+      return this.expandedRows.includes(index);
+  }
 
   getFile(event: any){       
     this.analyzerPath = event.target.files[0].name;
@@ -81,7 +90,7 @@ export class HomeComponent {
   download(downloadFilePath){
     var filePath = downloadFilePath.replace(/\//g, '|');
     this.http
-        .get("http://localhost:3001/download/" + filePath, { responseType: "blob" }) //set response Type properly (it is not part of headers)
+        .get(this.FILE_DOWNLOAD_URL + filePath, { responseType: "blob" }) //set response Type properly (it is not part of headers)
         .toPromise()
         .then(blob => {
             console.log(filePath[filePath.length -1]);
@@ -91,53 +100,48 @@ export class HomeComponent {
         })
         .catch(err => console.error("download error = ", err))
   }
-
-    // upload(uploader){
-    //   this.spinnerService.show();
-    //   uploader.uploadAll();
-    //   this.spinnerService.hide();
-    //   Swal.fire('Success!', "File uploaded successfully" , 'success');
-    //   this.ana = this.analyzerPath;
-    //   this.migratePath = this.analyzerPath;
-    // }
       
-    goToTab(value:string){
-        if(value == '2'){
-          this.showAnalyzer = false;
-          this.showMigrator = true;
-          this.showGenerator = false;
-          this.showAnalyzerData = false;
-          this.showMigratorData = false;
-          this.showGeneratorData = false;
-        }else if(value == '3'){
-          this.showAnalyzer = false;
-          this.showMigrator = false;
-          this.showGenerator = true;
-          this.showAnalyzerData = false;
-          this.showGeneratorData = false;
-          this.showMigratorData = false;
-          this.generatePath = null;
-        }else{
-          this.showAnalyzer = true;
-          this.showMigrator = false;
-          this.showGenerator = false;
-          this.showAnalyzerData = false;
-          this.showGeneratorData = false;
-          this.showMigratorData = false;
-          this.analyzerPath = null;
-        }
-    }
+  goToTab(value:string){
+      if(value == '2'){
+        this.showAnalyzer = false;
+        this.showMigrator = true;
+        this.showGenerator = false;
+        this.showAnalyzerData = false;
+        this.showMigratorData = false;
+        this.showGeneratorData = false;
+      }else if(value == '3'){
+        this.showAnalyzer = false;
+        this.showMigrator = false;
+        this.showGenerator = true;
+        this.showAnalyzerData = false;
+        this.showGeneratorData = false;
+        this.showMigratorData = false;
+        this.generatePath = null;
+      }else{
+        this.showAnalyzer = true;
+        this.showMigrator = false;
+        this.showGenerator = false;
+        this.showAnalyzerData = false;
+        this.showGeneratorData = false;
+        this.showMigratorData = false;
+        this.analyzerPath = null;
+      }
+  }
+  
+  chngRadiobtn(){
+    this.isActive = (!!this.isActive) ? "" : "rvToEms";
+  }
     
-    chngRadiobtn(){
-      this.isActive = (!!this.isActive) ? "" : "rvToEms";
-    }
-      
-    getFilename(reportLocation):string{
+  getFilename(reportLocation):string{
+    if(!!reportLocation){
       var filePath = reportLocation.replace(/\//g, '|');
       var fileArray = filePath.split('|');
       var reportName = fileArray[fileArray.length -1];
       return reportName;
+    }else{
+      return null;
     }
+  }
 
     analyze(analyzeData) {
         this.spinnerService.show();
@@ -284,10 +288,10 @@ export class HomeComponent {
       body = body.set('codebaseLocation_FormA', this.FILE_UPLOAD_PATH+this.migratorPath);
       body = body.set('bwMigration',migrateForm.bwMigration);
       body = body.set('rvMigration', migrateForm.rvMigration);
-      body = body.set('codeCleanUp', migrateForm.codeCleanUp);
-      body = body.set('ndProcess', migrateForm.ndProcess);
-      body = body.set('ndResource', migrateForm.ndResource);
-      body = body.set('ndGV', migrateForm.ndGV);
+      body = body.set('codeCleanUp',(!!migrateForm.codeCleanUp ? migrateForm.codeCleanUp : ""));
+      body = body.set('ndProcess', (!!migrateForm.ndProcess ? migrateForm.ndProcess : ""));
+      body = body.set('ndResource', (!!migrateForm.ndResource ? migrateForm.ndResource : ""));
+      body = body.set('ndGV', (!!migrateForm.ndGV ? migrateForm.ndGV : ""));
       body = body.set('ndFolder', migrateForm.ndFolder);
       body = body.set('folderReorganization', migrateForm.folderReorganization);
       if(!!this.selectedMigratorFile){
