@@ -25,13 +25,13 @@
         <div class="col-md-9 register-right">
             <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a [ngClass]="[ showAnalyzer ? 'nav-link active' : 'nav-link']" (click)="goToTab('1')">Intelli Analyzer</a>
+                    <a [ngClass]="[ showAnalyzer ? 'nav-link active' : 'nav-link']" (click)="goToTab('1')"  tooltip="Inteli Analyser feature analyze Process wise resource presence details for TIBCO BW codebases(BW 5.x),provides insights on migration compatibility​ & suggest possible workaround."  placement="bottom" delay="500">Intelli Analyzer</a>
                 </li>
                 <li class="nav-item">
-                    <a [ngClass]="[ showMigrator ? 'nav-link active' : 'nav-link']"  (click)="goToTab('2')">Code Migrator</a>
+                    <a [ngClass]="[ showMigrator ? 'nav-link active' : 'nav-link']"  (click)="goToTab('2')"  tooltip="Migrate the BW 5.x code to BW6.x/CE along with  automates various  post-migration manual efforts like resource re-organization, fix reference etc. This provides optional features like RV to EMS conversion, Code cleanup based on user selection."  placement="bottom" delay="500">Code Migrator</a>
                 </li>
                 <li class="nav-item">
-                    <a [ngClass]="[ showGenerator ? 'nav-link active' : 'nav-link']"  (click)="goToTab('3')">Artifact Generator</a>
+                    <a [ngClass]="[ showGenerator ? 'nav-link active' : 'nav-link']"  (click)="goToTab('3')"  tooltip="Generates deployment artifacts(template) for various environment  based on selected  target platform and profile."  placement="bottom" delay="500">Artifact Generator</a>
                 </li>
             </ul>
             <div class="container register" class="tab-content" id="myTabContent">
@@ -79,6 +79,7 @@
                         <div class="col-md-8">
                             <button [disabled]="analyzeForm.form.invalid || !analyzerPath" (click)="analyze(analyzeForm.value)" class="btn btn-lg btn-block btnRegister">Analyze</button>
                         </div>
+                        <p style="margin-top: 20px;font-family: italic; font-size: small;">Note:- Inteli Analyser feature analyze Process wise resource presence details for TIBCO BW codebases(BW 5.x),provides insights on migration compatibility​ & suggest possible workaround.</p>
                     </form>
                 </div>
                 <div class="tab-pane fade show active" *ngIf="showMigrator" role="tabpanel" aria-labelledby="migrator-tab">
@@ -139,16 +140,16 @@
                         </div>
                         <div class="col-md-12" *ngIf="!!migrateForm.value.codeCleanUp">
                             <div>
-                                <div class="form-group">
+                                <div class="form-group" tooltip="eg. /BusinessServices/NGLRewardMessageService/PrivateInterfaces/ToLme.process"  placement="bottom" delay="500">
                                     <input type="text" class="form-control" id="process" name="ndProcess" ngModel placeholder="Not to be Deleted Process">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" tooltip="eg. /SharedResources/Connections/Database/StageCacheDB.sharedjdbc"  placement="bottom" delay="500">
                                     <input type="text" class="form-control" id="resource" name="ndResource" ngModel placeholder="Not to be Deleted Resource">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" tooltip="eg. /defaultVars/NGL/Connections/JDBC/RefreshCacheDB/defaultVars.substvar"  placement="bottom" delay="500">
                                     <input type="text" class="form-control" id="gv" name="ndGV" ngModel placeholder="Not to be Deleted GV">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" tooltip="eg. /BusinessServices/NGLRewardMessageService/UnitTests"  placement="bottom" delay="500">
                                     <input type="text" class="form-control" id="folder" name="ndFolder" ngModel placeholder="Not to be Deleted Folder">
                                 </div>
                                 <div class="form-group">
@@ -157,14 +158,15 @@
                             </div>
                         </div>
                         <div class="col-md-12" style="text-align: left;margin-left: 15px">
-                            <div class="form-group">
+                            <div class="form-group" data-tip="This will exclude post migration Optimization."  placement="bottom" delay="500">
                                 <input type="checkbox" name="folderReorganization" id="reorganization" ngModel>
-                                <label style="margin-left: 5px;" for="reorganization">Folder Reorganization</label>
+                                <label style="margin-left: 5px;" for="reorganization">Exclude post migration Optimization</label>
                             </div>
                         </div>
                         <div class="col-md-8">
                             <button [disabled]="migrateForm.form.invalid || !migratorPath"  (click)="migrate(migrateForm.value)" class="btn btn-lg btn-block btnRegister">Migrate</button>
                         </div>
+                        <p style="margin-top: 20px; font-family: italic; font-size: small;">Note:- Migrate the BW 5.x code to BW6.x/CE along with  automates various  post-migration manual efforts like resource re-organization, fix reference etc. This provides optional features like RV to EMS conversion, Code cleanup based on user selection.</p>
                     </form>
                 </div>
                 <div class="tab-pane fade show active" *ngIf="showGenerator" role="tabpanel" aria-labelledby="generator-tab">
@@ -210,6 +212,7 @@
                         <div class="col-md-8">
                             <button (click)="generate(generateForm.value)" [disabled]="generateForm.form.invalid || !generatePath" class="btn btn-lg btn-block btnRegister">Generate</button>
                         </div>
+                        <p style="margin-top: 20px;font-family: italic; font-size: small;">Note:- Generates deployment artifacts(template) for various environment  based on selected  target platform and profile.</p>
                     </form>
                 </div>
             </div>
@@ -236,7 +239,7 @@
                     </thead>
                     <tbody>
                       <tr class="accordion-toggle collapsed" style="border: 0.5px solid black;;text-align: center;height: 55px;" *ngFor="let value of (values | sortTable); index as i" (click)="expandRow(i,value.Compatibility[0])" [ngStyle]="{'backgroundColor': value.Compatibility[0] == 'true' ? 'rgb(130 208 147)' : 'rgb(228 131 131)' }">
-                            <div class="row" >
+                            <div class="row" tooltip="{{value.Compatibility[0] == 'false' ?  ('Suggested Activity:- '+value.SuggestedActivity[0]) : ''}}"  placement="bottom" delay="500">
                                 <div class="rowData"><i *ngIf="value.Compatibility[0] == 'false'" [ngClass]="checkExpanded(i) ? 'fa fa-minus' : 'fa fa-plus'" aria-hidden="true" style="margin-right: 10px;"></i>{{ value.ActivityGroup[0] }}</div>
                                 <div class="rowData">{{ value.ActivityName[0] }}</div>
                                 <div class="rowData">{{ value.Count[0] }}</div>
@@ -308,9 +311,7 @@
         </div>
     </div>
 </div>
-<!-- <div class="loading" *ngIf="showLoading">
-    <mat-spinner></mat-spinner>
-  </div> -->
+
 <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" template="<img src='assets/spinner.gif'/>"><br>
     <p style="color: white; text-align: center;margin-top: 130px;">Please Wait... </p>  
 </ngx-spinner> 

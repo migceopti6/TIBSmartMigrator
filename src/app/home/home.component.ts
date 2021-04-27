@@ -288,12 +288,12 @@ export class HomeComponent {
       body = body.set('codebaseLocation_FormA', this.FILE_UPLOAD_PATH+this.migratorPath);
       body = body.set('bwMigration',migrateForm.bwMigration);
       body = body.set('rvMigration', migrateForm.rvMigration);
-      body = body.set('codeCleanUp',(!!migrateForm.codeCleanUp ? migrateForm.codeCleanUp : ""));
+      body = body.set('codeCleanUp',migrateForm.codeCleanUp);
       body = body.set('ndProcess', (!!migrateForm.ndProcess ? migrateForm.ndProcess : ""));
       body = body.set('ndResource', (!!migrateForm.ndResource ? migrateForm.ndResource : ""));
       body = body.set('ndGV', (!!migrateForm.ndGV ? migrateForm.ndGV : ""));
-      body = body.set('ndFolder', migrateForm.ndFolder);
-      body = body.set('folderReorganization', migrateForm.folderReorganization);
+      body = body.set('ndFolder', (!!migrateForm.ndFolder ? migrateForm.ndFolder : ""));
+      body = body.set('folderReorganization', (!!migrateForm.folderReorganization ? 'false' : 'true'));
       if(!!this.selectedMigratorFile){
         const uploadData = new FormData();
         uploadData.append('file', this.selectedMigratorFile);
