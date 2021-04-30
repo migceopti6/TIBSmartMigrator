@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 
 import { AuthenticationService } from '../_services';
 import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'login',
@@ -46,6 +47,7 @@ export class LoginComponent implements OnInit {
             },
             error => {
                 this.error = error;
+                Swal.fire('Error!', "Invalid username or password." , 'error');
                 this.spinnerService.hide();
             });
     }

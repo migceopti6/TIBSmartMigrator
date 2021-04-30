@@ -1,15 +1,14 @@
 
 .analyzeData{
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    padding: 3%;
+    background: #f8f9fa;
+    margin-bottom: 70px;
 }
 
   tr.hide-table-padding td {
     padding: 0;
   }
   .register{
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    padding: 3%;
+    background: #f8f9fa;
   }
   
   .expand-button {

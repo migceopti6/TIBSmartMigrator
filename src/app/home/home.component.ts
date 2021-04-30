@@ -145,141 +145,75 @@ export class HomeComponent {
 
     analyze(analyzeData) {
         this.spinnerService.show();
-          const uploadData = new FormData();
-          uploadData.append('file', this.selectedAnalyzerFile);
-          this.http.post(this.FILE_UPLOAD_URL, uploadData)
-            .subscribe(
-              (res) => {
-                console.log(res);
-                  // Send Http request
-                  let body = new HttpParams();
-                  // body = body.set('codebaseLocation_FormA', analyzeData.codebaseLocation_FormA);
-                  body = body.set('codebaseLocation_FormA', this.FILE_UPLOAD_PATH+this.analyzerPath);
-                  body = body.set('bwCompatibility', analyzeData.bwCompatibility);
-                 
-                  this.http.post(this.ANALYZER_URL,body,{ responseType: 'text' })
-                    .subscribe({
-                      next: responseData => {
-                        console.log(responseData);
-                          // this.analyzerPathLocation = analyzeData.codebaseLocation_FormA;
-                          // this.analyzerCompatibility = analyzeData.bwCompatibility;
-                        
-                          const parser = new xml2js.Parser({ strict: false, trim: true });
-                          xml2js.parseString(responseData, {trim: true}, (err, result) => {
-                            if(err){
-                              console.log(err);
-                              Swal.fire('Failure!', "Response format error." , 'error');
-                              this.spinnerService.hide();
-                            }else{
-                              console.log(result);
-                              this.migratorPath = this.analyzerPath;
-                              if(!!result && !!result.response && !!result.response.Rows && !!result.response.Rows[0]){
-                                this.reportLocation = result.response.location[0];
-                                this.analyzerReportPath = this.getFilename(this.reportLocation);
-                                console.log(result.response.Rows[0].root); 
-                                console.log(result.response.Rows[0].root[0].ActivityGroup[0]); 
-                                console.log(result.response.Rows[0].root[0].ActivityName[0]); 
-                                console.log(result.response.Rows[0].root[0].Count[0]); 
-                                console.log(result.response.Rows[0].root[0].Compatibility[0]); 
-                                console.log(result.response.Rows[0].root[0].SuggestedActivity[0]); 
-                                this.values = result.response.Rows[0].root;
-                                this.showAnalyzerData = true;
-                                this.spinnerService.hide();
-                              }else{
-                                this.showAnalyzerData = false;
-                                this.migratorPath = null;
-                                this.spinnerService.hide();
-                                Swal.fire('Failure!', result , 'error');
-                              }
-                            }
-                          });
-                        },
-                        error: error => {
-                          this.spinnerService.hide();
-                          Swal.fire('Failure!', "Response format error." , 'error');
-                          this.showAnalyzerData = false;
-                          console.log(error.message);
-                        }        
-                    });
-              },
-              (err) => {
-                console.log(err);
-                Swal.fire('Failure!', "File upload failed." , 'error');
-                this.showAnalyzerData = false;
-                this.spinnerService.hide();
-              }
-            );
-  
-      //   const xmlString = `
-      //   <?xml version="1.0" encoding="UTF-8"?><response><location>C:\TibSmartMigrator\migration\src\file_migration\File_IntelliReport</location><Rows><root><ActivityName>File Poller</ActivityName><ActivityGroup>File</ActivityGroup><Count>1</Count><Compatibility>true</Compatibility></root><root><ActivityName>Read File</ActivityName><ActivityGroup>File</ActivityGroup><Count>1</Count><Compatibility>true</Compatibility></root><root><ActivityName>Write File</ActivityName><ActivityGroup>File</ActivityGroup><Count>2</Count><Compatibility>true</Compatibility></root><root><ActivityName>Create File</ActivityName><ActivityGroup>File</ActivityGroup><Count>1</Count><Compatibility>true</Compatibility></root><root><ActivityName>Remove File</ActivityName><ActivityGroup>File</ActivityGroup><Count>1</Count><Compatibility>true</Compatibility></root><root><ActivityName>Wait for File Change</ActivityName><ActivityGroup>File</ActivityGroup><Count>1</Count><Compatibility>false</Compatibility></root><root><ActivityName>Call Process</ActivityName><ActivityGroup>General Activities</ActivityGroup><Count>1</Count><Compatibility>true</Compatibility></root><root><ActivityName>Parse XML</ActivityName><ActivityGroup>XML Activities</ActivityGroup><Count>2</Count><Compatibility>true</Compatibility></root></Rows></response>
-      //   `;
-      //     const parser = new xml2js.Parser({ strict: false, trim: true });
-      //     xml2js.parseString(xmlString, {trim: true}, (err, result) => {
-      //       if(err) console.log(err);
-      //       console.log(result.response.Rows[0].root); 
-      //       console.log(result.response.Rows[0].root[0].ActivityGroup[0]); 
-      //       console.log(result.response.Rows[0].root[0].ActivityName[0]); 
-      //       console.log(result.response.Rows[0].root[0].Count[0]); 
-      //       console.log(result.response.Rows[0].root[0].Compatibility[0]); 
-  
-  
-      //       this.values = result.response.Rows[0].root;
-      //   });
-    }
-  
-    generate(generateForm) {
-        this.spinnerService.show();
         const uploadData = new FormData();
-        uploadData.append('file', this.selectedGeneratorFile);
-          // Swal.fire('Success!', "File uploaded successfully" , 'success');
+        uploadData.append('file', this.selectedAnalyzerFile);
         this.http.post(this.FILE_UPLOAD_URL, uploadData)
           .subscribe(
             (res) => {
               console.log(res);
-              // Send Http request
-              let body = new HttpParams();
-              body = body.set('codebaseLocation_FormA',  this.FILE_UPLOAD_PATH+this.generatePath);
-              body = body.set('profileName', generateForm.profileName);
-              body = body.set('bwArtifact', generateForm.bwArtifact);
-
-              this.http.post(this.GENERATOR_URL,body,{ responseType: 'text' })
-                .subscribe({
-                  next: responseData => {
-                    console.log(responseData);
-                    // this.analyzerPathLocation = generateForm.codebaseLocation_FormA;
-                    // this.analyzerCompatibility = generateForm.profileName;
-                    // this.analyzerCompatibility = generateForm.bwArtifact;
-                    const parser = new xml2js.Parser({ strict: false, trim: true });
-                    xml2js.parseString(responseData, {trim: true}, (err, result) => {
-                      if(err){
-                        console.log(err);
-                        Swal.fire('Failure!', responseData , 'error');
+                // Send Http request
+                let body = new HttpParams();
+                // body = body.set('codebaseLocation_FormA', analyzeData.codebaseLocation_FormA);
+                body = body.set('codebaseLocation_FormA', this.FILE_UPLOAD_PATH+this.analyzerPath);
+                body = body.set('bwCompatibility', analyzeData.bwCompatibility);
+                
+                this.http.post(this.ANALYZER_URL,body,{ responseType: 'text' })
+                  .subscribe({
+                    next: responseData => {
+                      console.log(responseData);
+                        // this.analyzerPathLocation = analyzeData.codebaseLocation_FormA;
+                        // this.analyzerCompatibility = analyzeData.bwCompatibility;
+                      
+                        const parser = new xml2js.Parser({ strict: false, trim: true });
+                        xml2js.parseString(responseData, {trim: true}, (err, result) => {
+                          if(err){
+                            console.log(err);
+                            Swal.fire('Failure!', "Response format error." , 'error');
+                            this.spinnerService.hide();
+                          }else{
+                            console.log(result);
+                            this.migratorPath = this.analyzerPath;
+                            if(!!result && !!result.response && !!result.response.Rows && !!result.response.Rows[0]){
+                              this.reportLocation = result.response.location[0];
+                              this.analyzerReportPath = this.getFilename(this.reportLocation);
+                              console.log(result.response.Rows[0].root); 
+                              console.log(result.response.Rows[0].root[0].ActivityGroup[0]); 
+                              console.log(result.response.Rows[0].root[0].ActivityName[0]); 
+                              console.log(result.response.Rows[0].root[0].Count[0]); 
+                              console.log(result.response.Rows[0].root[0].Compatibility[0]); 
+                              console.log(result.response.Rows[0].root[0].SuggestedActivity[0]); 
+                              this.values = result.response.Rows[0].root;
+                              this.showAnalyzerData = true;
+                              setTimeout(() => {
+                                window.scrollTo(0, 1500);
+                              }, 10)
+                              this.spinnerService.hide();
+                            }else{
+                              this.showAnalyzerData = false;
+                              this.migratorPath = null;
+                              this.spinnerService.hide();
+                              Swal.fire('Failure!', result , 'error');
+                            }
+                          }
+                        });
+                      },
+                      error: error => {
                         this.spinnerService.hide();
-                      } else{
-                        console.log(result);
-                        this.values = result;
-                        this.showGeneratorData = true;
-                        this.spinnerService.hide();
-                      }
-                    });
-                  },
-                  error: error => {
-                    this.spinnerService.hide();
-                    Swal.fire('Failure!', "Response format error." , 'error');
-                    this.showGeneratorData = false;
-                    console.log(error.message);
-                  }        
-                });
+                        Swal.fire('Failure!', "Response format error." , 'error');
+                        this.showAnalyzerData = false;
+                        console.log(error.message);
+                      }        
+                  });
             },
             (err) => {
               console.log(err);
               Swal.fire('Failure!', "File upload failed." , 'error');
-              this.showGeneratorData = false;
+              this.showAnalyzerData = false;
               this.spinnerService.hide();
             }
           );
     }
-  
+
     migrate(migrateForm:any){
       this.spinnerService.show();
       let httpHeaders = new HttpHeaders()
@@ -316,6 +250,9 @@ export class HomeComponent {
                         console.log(result);
                         this.values = result;
                         this.showMigratorData = true;
+                        setTimeout(() => {
+                          window.scrollTo(0, 1500);
+                        }, 10)
                         this.spinnerService.hide();
                       }
                     });
@@ -364,6 +301,62 @@ export class HomeComponent {
          });
       }
       
+    }
+  
+    generate(generateForm) {
+        this.spinnerService.show();
+        const uploadData = new FormData();
+        uploadData.append('file', this.selectedGeneratorFile);
+          // Swal.fire('Success!', "File uploaded successfully" , 'success');
+        this.http.post(this.FILE_UPLOAD_URL, uploadData)
+          .subscribe(
+            (res) => {
+              console.log(res);
+              // Send Http request
+              let body = new HttpParams();
+              body = body.set('codebaseLocation_FormA',  this.FILE_UPLOAD_PATH+this.generatePath);
+              body = body.set('profileName', generateForm.profileName);
+              body = body.set('bwArtifact', generateForm.bwArtifact);
+
+              this.http.post(this.GENERATOR_URL,body,{ responseType: 'text' })
+                .subscribe({
+                  next: responseData => {
+                    console.log(responseData);
+                    // this.analyzerPathLocation = generateForm.codebaseLocation_FormA;
+                    // this.analyzerCompatibility = generateForm.profileName;
+                    // this.analyzerCompatibility = generateForm.bwArtifact;
+                    const parser = new xml2js.Parser({ strict: false, trim: true });
+                    xml2js.parseString(responseData, {trim: true}, (err, result) => {
+                      if(err){
+                        console.log(err);
+                        Swal.fire('Failure!', responseData , 'error');
+                        this.spinnerService.hide();
+                      } else{
+                        console.log(result);
+                        this.values = result;
+                        this.showGeneratorData = true;
+                        setTimeout(() => {
+                          window.scrollTo(0, 1500);
+                        }, 10)
+                        this.spinnerService.hide();
+                      }
+                    });
+                  },
+                  error: error => {
+                    this.spinnerService.hide();
+                    Swal.fire('Failure!', "Response format error." , 'error');
+                    this.showGeneratorData = false;
+                    console.log(error.message);
+                  }        
+                });
+            },
+            (err) => {
+              console.log(err);
+              Swal.fire('Failure!', "File upload failed." , 'error');
+              this.showGeneratorData = false;
+              this.spinnerService.hide();
+            }
+          );
     }
 
     logout(){

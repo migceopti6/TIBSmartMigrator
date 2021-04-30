@@ -11,307 +11,327 @@
 <!-- <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="default" type="ball-spin-clockwise">  
     <p style="color: white">Please Wait... </p>  
 </ngx-spinner>  -->
-<div>
-    <h1 style="width:100%;height:50px;text-align: right;color:#052F87;margin-top: 5px;width: 100%;padding-right: 8%;"><b>Cognizant</b></h1>
-</div>
-<div class="container register">
-    <div class="row">
-        <div class="col-md-3 register-left">
-            <img src="assets/user_icon.png"/>
-            <h3>TIBSmartMigrator</h3>
-            <p *ngFor="let user of users">Welcome {{user.firstName}} {{user.lastName}}</p>
-            <button style="border-radius: 1.5rem;" (click)="logout()">Logout</button><br/>
-        </div>
-        <div class="col-md-9 register-right">
-            <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a [ngClass]="[ showAnalyzer ? 'nav-link active' : 'nav-link']" (click)="goToTab('1')"  tooltip="Inteli Analyser feature analyze Process wise resource presence details for TIBCO BW codebases(BW 5.x),provides insights on migration compatibility​ & suggest possible workaround."  placement="bottom" delay="500">Intelli Analyzer</a>
-                </li>
-                <li class="nav-item">
-                    <a [ngClass]="[ showMigrator ? 'nav-link active' : 'nav-link']"  (click)="goToTab('2')"  tooltip="Migrate the BW 5.x code to BW6.x/CE along with  automates various  post-migration manual efforts like resource re-organization, fix reference etc. This provides optional features like RV to EMS conversion, Code cleanup based on user selection."  placement="bottom" delay="500">Code Migrator</a>
-                </li>
-                <li class="nav-item">
-                    <a [ngClass]="[ showGenerator ? 'nav-link active' : 'nav-link']"  (click)="goToTab('3')"  tooltip="Generates deployment artifacts(template) for various environment  based on selected  target platform and profile."  placement="bottom" delay="500">Artifact Generator</a>
-                </li>
-            </ul>
-            <div class="container register" class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" *ngIf="showAnalyzer" role="tabpanel" aria-labelledby="analyzer-tab">
-                    <h3 class="register-heading">Intelli Analyzer</h3>
-                    <form #analyzeForm="ngForm" class="row register-form">
-                        <div class="col-md-12">
-                            <div class="row" style="text-align: left; margin-top: 10px;">
-                                <div class="col-md-6">
-                                    <label class="radio inline"> 
-                                        <input type="radio" name="bwCompatibility" [(ngModel)]="bwCompatibility" value="bw6" required>
-                                        <span> BW6 Compatibility </span> 
-                                    </label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="radio inline"> 
-                                        <input style="margin-left: 20px;" type="radio" [(ngModel)]="bwCompatibility" name="bwCompatibility" value="bwce" required>
-                                        <span> BWCE Compatibility</span> 
-                                    </label>
-                                </div>
-                            </div>                            
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row" style="text-align: left; margin-top: 10px;">
-                                <div class="col-md-8">
-                                    <!-- <div class="form-group"> -->
-                                        <input type="text" [disabled]="true" name="codebaseLocation_FormA" [(ngModel)]="analyzerPath" class="form-control" placeholder="BW5 Code location" required/>
-                                        <!-- <input type="file" class="form-control" name="single" ng2FileSelect [uploader]="uploader" [(ngModel)]="file" (change)="getFile($event,uploader)" accept=".zip,.rar,.7zip" required/> {{uploader.getNotUploadedItems().length}} -->
-                                    <!-- </div> -->
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <!-- #fileInput -->
-                                        <!-- <input type="file"
-                                        (change)="onChange($event)"> -->
-                                        <!-- fileInput.click() -->
-                                        <!-- <button  (click)="onUpload()">Upload</button> -->
-                                        <input type="file" name="single"#fileInput hidden (change)="getFile($event)" accept=".zip,.rar,.7zip" required/>
-                                        <button type="button" class="btn btn-primary" (click)="fileInput.click()">Choose File</button>
-                                        <!-- <button type="button" class="btn btn-primary" (click)="upload(uploader)" [disabled]="!uploader.getNotUploadedItems().length">Upload</button> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <button [disabled]="analyzeForm.form.invalid || !analyzerPath" (click)="analyze(analyzeForm.value)" class="btn btn-lg btn-block btnRegister">Analyze</button>
-                        </div>
-                        <p style="margin-top: 20px;font-family: italic; font-size: small;">Note:- Inteli Analyser feature analyze Process wise resource presence details for TIBCO BW codebases(BW 5.x),provides insights on migration compatibility​ & suggest possible workaround.</p>
-                    </form>
+<html>
+<body>
+    <header>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    <p style="text-align: left;font-size: 24px;margin-top: 15px;">TIBSmartMigrator</p>
                 </div>
-                <div class="tab-pane fade show active" *ngIf="showMigrator" role="tabpanel" aria-labelledby="migrator-tab">
-                    <h3 class="register-heading">Code Migrator</h3>
-                    <form #migrateForm="ngForm" class="row register-form">
-                        <div class="col-md-12">
-                            <div class="row" style="text-align: left; margin-top: 10px;">
-                                <div class="col-md-6">
-                                    <label class="radio inline"> 
-                                        <input type="radio" name="bwMigration" ngModel value="bw6" required>
-                                        <span> BW6 Migration </span> 
-                                    </label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="radio inline"> 
-                                        <input type="radio" name="bwMigration" ngModel value="bwce" required>
-                                        <span> BWCE Migration</span> 
-                                    </label>
-                                </div>
+                <div class="col-md-6">
+                     <p *ngFor="let user of users" style="text-align: right;font-size: large;margin-top: 15px;color: #ADD1FF;">Welcome {{user.firstName}} {{user.lastName}}</p>
+                </div>
+                <div class="col-md-2">
+                    <button style="border-radius: 1rem ;background-color: #0033A0; color: white;font-size: large;width: 90px;" (click)="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container register">
+        <div class="row">
+            <!-- <div class="col-md-3 register-left">
+                <img src="assets/user_icon.png"/>
+                <h3>TIBSmartMigrator</h3>
+                <p *ngFor="let user of users">Welcome {{user.firstName}} {{user.lastName}}</p>
+                <button style="border-radius: 1.5rem;" (click)="logout()">Logout</button><br/>
+            </div> -->
+            <div class="col-md-9 register-right">
+                <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a [ngClass]="[ showAnalyzer ? 'nav-link active' : 'nav-link']" (click)="goToTab('1')">Intelli Analyzer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a [ngClass]="[ showMigrator ? 'nav-link active' : 'nav-link']"  (click)="goToTab('2')">Code Migrator</a>
+                    </li>
+                    <li class="nav-item">
+                        <a [ngClass]="[ showGenerator ? 'nav-link active' : 'nav-link']"  (click)="goToTab('3')">Artifact Generator</a>
+                    </li>
+                </ul>
+                <div class="container register" class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" *ngIf="showAnalyzer" role="tabpanel" aria-labelledby="analyzer-tab">
+                        <h3 class="register-heading">Intelli Analyzer</h3>
+                        <form #analyzeForm="ngForm" class="row register-form">
+                            <div class="col-md-12">
+                                <div class="row" style="text-align: left; margin-top: 10px;">
+                                    <div class="col-md-6">
+                                        <label class="radio inline"> 
+                                            <input type="radio" name="bwCompatibility" [(ngModel)]="bwCompatibility" value="bw6" required>
+                                            <span> BW6 Compatibility </span> 
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="radio inline"> 
+                                            <input style="margin-left: 20px;" type="radio" [(ngModel)]="bwCompatibility" name="bwCompatibility" value="bwce" required>
+                                            <span> BWCE Compatibility</span> 
+                                        </label>
+                                    </div>
+                                </div>                            
                             </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row" style="text-align: left; margin-top: 10px;">
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <!-- <input type="text" class="form-control" placeholder="BW5 Code location" name="codebaseLocation_FormA" ngModel required/> -->
-                                        <!-- <label>BW5 Code location</label> -->
-                                        <input type="text" [disabled]="true" name="codebaseLocation_FormA" [(ngModel)]="migratorPath" class="form-control" placeholder="BW5 Code location" required/>
+                            <div class="col-md-12">
+                                <div class="row" style="text-align: left; margin-top: 10px;">
+                                    <div class="col-md-8">
+                                        <!-- <div class="form-group"> -->
+                                            <input type="text" [disabled]="true" name="codebaseLocation_FormA" [(ngModel)]="analyzerPath" class="form-control" placeholder="BW5 Code location" required/>
+                                            <!-- <input type="file" class="form-control" name="single" ng2FileSelect [uploader]="uploader" [(ngModel)]="file" (change)="getFile($event,uploader)" accept=".zip,.rar,.7zip" required/> {{uploader.getNotUploadedItems().length}} -->
+                                        <!-- </div> -->
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <!-- #fileInput -->
+                                            <!-- <input type="file"
+                                            (change)="onChange($event)"> -->
+                                            <!-- fileInput.click() -->
+                                            <!-- <button  (click)="onUpload()">Upload</button> -->
+                                            <input type="file" name="single"#fileInput hidden (change)="getFile($event)" accept=".zip,.rar,.7zip" required/>
+                                            <button type="button" class="btn btn-primary" (click)="fileInput.click()">Choose File</button>
+                                            <!-- <button type="button" class="btn btn-primary" (click)="upload(uploader)" [disabled]="!uploader.getNotUploadedItems().length">Upload</button> -->
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <input type="file" name="single" #migratorfileInput hidden (change)="getMigrateFile($event)" accept=".zip,.rar,.7zip" required/>
-                                    <button type="button" class="btn btn-primary" (click)="migratorfileInput.click()">Choose File</button>
+                            </div>
+                            <div class="col-md-8">
+                                <button [disabled]="analyzeForm.form.invalid || !analyzerPath" (click)="analyze(analyzeForm.value)" class="btn btn-lg btn-block btnRegister">Analyze</button>
+                            </div>
+                            <p style="margin-top: 20px;font-family: italic; font-size: small;">Note:- Inteli Analyser feature analyze Process wise resource presence details for TIBCO BW codebases(BW 5.x),provides insights on migration compatibility​ & suggest possible workaround.</p>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade show active" *ngIf="showMigrator" role="tabpanel" aria-labelledby="migrator-tab">
+                        <h3 class="register-heading">Code Migrator</h3>
+                        <form #migrateForm="ngForm" class="row register-form">
+                            <div class="col-md-12">
+                                <div class="row" style="text-align: left; margin-top: 10px;">
+                                    <div class="col-md-6">
+                                        <label class="radio inline"> 
+                                            <input type="radio" name="bwMigration" ngModel value="bw6" required>
+                                            <span> BW6 Migration </span> 
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="radio inline"> 
+                                            <input type="radio" name="bwMigration" ngModel value="bwce" required>
+                                            <span> BWCE Migration</span> 
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row" style="text-align: left; margin-top: 10px;">
-                                <div class="col-md-6">
-                                    <label class="radio inline"> 
-                                        <input type="radio" name="rvMigration" [(ngModel)]="isActive" (click) ="chngRadiobtn()" value="rvToEms">
-                                        <span> RV To EMS Migration </span> 
-                                    </label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="radio inline"> 
-                                        <input type="radio" [disabled]=true value="rvToHttp">
-                                        <span> RV To HTTP Migration</span> 
-                                    </label>
+                            <div class="col-md-12">
+                                <div class="row" style="text-align: left; margin-top: 10px;">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <!-- <input type="text" class="form-control" placeholder="BW5 Code location" name="codebaseLocation_FormA" ngModel required/> -->
+                                            <!-- <label>BW5 Code location</label> -->
+                                            <input type="text" [disabled]="true" name="codebaseLocation_FormA" [(ngModel)]="migratorPath" class="form-control" placeholder="BW5 Code location" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="file" name="single" #migratorfileInput hidden (change)="getMigrateFile($event)" accept=".zip,.rar,.7zip" required/>
+                                        <button type="button" class="btn btn-primary" (click)="migratorfileInput.click()">Choose File</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12" style="text-align: left; margin-top: 10px;margin-left: 15px;">
-                            <div class="form-group">
-                                <input type="checkbox" name="codeCleanUp" id="cleanUp" ngModel>
-                                <label style="margin-left: 5px;" for="cleanUp">Code Cleanup</label>
+                            <div class="col-md-12">
+                                <div class="row" style="text-align: left; margin-top: 10px;">
+                                    <div class="col-md-6">
+                                        <label class="radio inline"> 
+                                            <input type="radio" name="rvMigration" [(ngModel)]="isActive" (click) ="chngRadiobtn()" value="rvToEms">
+                                            <span> RV To EMS Migration </span> 
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="radio inline"> 
+                                            <input type="radio" [disabled]=true value="rvToHttp">
+                                            <span> RV To HTTP Migration</span> 
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-12" *ngIf="!!migrateForm.value.codeCleanUp">
-                            <div>
-                                <div class="form-group" tooltip="eg. /BusinessServices/NGLRewardMessageService/PrivateInterfaces/ToLme.process"  placement="bottom" delay="500">
-                                    <input type="text" class="form-control" id="process" name="ndProcess" ngModel placeholder="Not to be Deleted Process">
-                                </div>
-                                <div class="form-group" tooltip="eg. /SharedResources/Connections/Database/StageCacheDB.sharedjdbc"  placement="bottom" delay="500">
-                                    <input type="text" class="form-control" id="resource" name="ndResource" ngModel placeholder="Not to be Deleted Resource">
-                                </div>
-                                <div class="form-group" tooltip="eg. /defaultVars/NGL/Connections/JDBC/RefreshCacheDB/defaultVars.substvar"  placement="bottom" delay="500">
-                                    <input type="text" class="form-control" id="gv" name="ndGV" ngModel placeholder="Not to be Deleted GV">
-                                </div>
-                                <div class="form-group" tooltip="eg. /BusinessServices/NGLRewardMessageService/UnitTests"  placement="bottom" delay="500">
-                                    <input type="text" class="form-control" id="folder" name="ndFolder" ngModel placeholder="Not to be Deleted Folder">
-                                </div>
+                            <div class="col-md-12" style="text-align: left; margin-top: 10px;margin-left: 15px;">
                                 <div class="form-group">
-                                    <label>*all value can be comma separated</label>
+                                    <input type="checkbox" name="codeCleanUp" id="cleanUp" ngModel>
+                                    <label style="margin-left: 5px;" for="cleanUp">Code Cleanup</label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12" style="text-align: left;margin-left: 15px">
-                            <div class="form-group" data-tip="This will exclude post migration Optimization."  placement="bottom" delay="500">
-                                <input type="checkbox" name="folderReorganization" id="reorganization" ngModel>
-                                <label style="margin-left: 5px;" for="reorganization">Exclude post migration Optimization</label>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <button [disabled]="migrateForm.form.invalid || !migratorPath"  (click)="migrate(migrateForm.value)" class="btn btn-lg btn-block btnRegister">Migrate</button>
-                        </div>
-                        <p style="margin-top: 20px; font-family: italic; font-size: small;">Note:- Migrate the BW 5.x code to BW6.x/CE along with  automates various  post-migration manual efforts like resource re-organization, fix reference etc. This provides optional features like RV to EMS conversion, Code cleanup based on user selection.</p>
-                    </form>
-                </div>
-                <div class="tab-pane fade show active" *ngIf="showGenerator" role="tabpanel" aria-labelledby="generator-tab">
-                    <h3  class="register-heading">Deployment Artifact Generator</h3>
-                    <form #generateForm="ngForm" class="row register-form">
-                        <div class="col-md-12">
-                            <div class="row" style="text-align: left; margin-top: 10px;">
-                                <div class="col-md-6">
-                                    <label class="radio inline"> 
-                                        <input type="radio" name="bwArtifact" ngModel value="bw6" required>
-                                        <span> BW6 Artifact </span> 
-                                    </label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="radio inline"> 
-                                        <input type="radio" ngModel name="bwArtifact" value="bwce" required>
-                                        <span style="margin-left: 5px;">BWCE Artifact</span> 
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row" style="text-align: left; margin-top: 10px;">
-                                <div class="col-md-8">
+                            <div class="col-md-12" *ngIf="!!migrateForm.value.codeCleanUp">
+                                <div>
+                                    <div class="form-group" tooltip="eg. /BusinessServices/NGLRewardMessageService/PrivateInterfaces/ToLme.process"  placement="bottom" delay="500">
+                                        <input type="text" class="form-control" id="process" name="ndProcess" ngModel placeholder="Not to be Deleted Process">
+                                    </div>
+                                    <div class="form-group" tooltip="eg. /SharedResources/Connections/Database/StageCacheDB.sharedjdbc"  placement="bottom" delay="500">
+                                        <input type="text" class="form-control" id="resource" name="ndResource" ngModel placeholder="Not to be Deleted Resource">
+                                    </div>
+                                    <div class="form-group" tooltip="eg. /defaultVars/NGL/Connections/JDBC/RefreshCacheDB/defaultVars.substvar"  placement="bottom" delay="500">
+                                        <input type="text" class="form-control" id="gv" name="ndGV" ngModel placeholder="Not to be Deleted GV">
+                                    </div>
+                                    <div class="form-group" tooltip="eg. /BusinessServices/NGLRewardMessageService/UnitTests"  placement="bottom" delay="500">
+                                        <input type="text" class="form-control" id="folder" name="ndFolder" ngModel placeholder="Not to be Deleted Folder">
+                                    </div>
                                     <div class="form-group">
-                                        <!-- <input type="text" class="form-control" name = "codebaseLocation_FormA" ngModel placeholder="BW6/CE Code location" required/> -->
-                                        <!-- <label>BW6/CE Code location</label> -->
-                                        <input type="text" [disabled]="true" name="codebaseLocation_FormA" [(ngModel)]="generatePath" class="form-control" placeholder="BW6/CE Code location" required/>
+                                        <label>*all value can be comma separated</label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <input type="file" name="single" #generatorfileInput hidden (change)="getGenerateFile($event)" accept=".zip,.rar,.7zip" required/>
-                                    <button type="button" class="btn btn-primary" (click)="generatorfileInput.click()">Choose File</button>
+                            </div>
+                            <div class="col-md-12" style="text-align: left;margin-left: 15px">
+                                <div class="form-group" data-tip="This will exclude post migration Optimization."  placement="bottom" delay="500">
+                                    <input type="checkbox" name="folderReorganization" id="reorganization" ngModel>
+                                    <label style="margin-left: 5px;" for="reorganization">Exclude post migration Optimization</label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Profile Name</label>
-                                <input type="text" class="form-control" name = "profileName" ngModel [(ngModel)]="profileName" placeholder="Profile Name" value="default" required/>
+                            <div class="col-md-8">
+                                <button [disabled]="migrateForm.form.invalid || !migratorPath"  (click)="migrate(migrateForm.value)" class="btn btn-lg btn-block btnRegister">Migrate</button>
                             </div>
-                        </div>                   
-                        <div class="col-md-8">
-                            <button (click)="generate(generateForm.value)" [disabled]="generateForm.form.invalid || !generatePath" class="btn btn-lg btn-block btnRegister">Generate</button>
-                        </div>
-                        <p style="margin-top: 20px;font-family: italic; font-size: small;">Note:- Generates deployment artifacts(template) for various environment  based on selected  target platform and profile.</p>
-                    </form>
+                            <p style="margin-top: 20px; font-family: italic; font-size: small;">Note:- Migrate the BW 5.x code to BW6.x/CE along with  automates various  post-migration manual efforts like resource re-organization, fix reference etc. This provides optional features like RV to EMS conversion, Code cleanup based on user selection.</p>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade show active" *ngIf="showGenerator" role="tabpanel" aria-labelledby="generator-tab">
+                        <h3  class="register-heading">Deployment Artifact Generator</h3>
+                        <form #generateForm="ngForm" class="row register-form">
+                            <div class="col-md-12">
+                                <div class="row" style="text-align: left; margin-top: 10px;">
+                                    <div class="col-md-6">
+                                        <label class="radio inline"> 
+                                            <input type="radio" name="bwArtifact" ngModel value="bw6" required>
+                                            <span> BW6 Artifact </span> 
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="radio inline"> 
+                                            <input type="radio" ngModel name="bwArtifact" value="bwce" required>
+                                            <span style="margin-left: 5px;">BWCE Artifact</span> 
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row" style="text-align: left; margin-top: 10px;">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <!-- <input type="text" class="form-control" name = "codebaseLocation_FormA" ngModel placeholder="BW6/CE Code location" required/> -->
+                                            <!-- <label>BW6/CE Code location</label> -->
+                                            <input type="text" [disabled]="true" name="codebaseLocation_FormA" [(ngModel)]="generatePath" class="form-control" placeholder="BW6/CE Code location" required/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="file" name="single" #generatorfileInput hidden (change)="getGenerateFile($event)" accept=".zip,.rar,.7zip" required/>
+                                        <button type="button" class="btn btn-primary" (click)="generatorfileInput.click()">Choose File</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Profile Name</label>
+                                    <input type="text" class="form-control" name = "profileName" ngModel [(ngModel)]="profileName" placeholder="Profile Name" value="default" required/>
+                                </div>
+                            </div>                   
+                            <div class="col-md-8">
+                                <button (click)="generate(generateForm.value)" [disabled]="generateForm.form.invalid || !generatePath" class="btn btn-lg btn-block btnRegister">Generate</button>
+                            </div>
+                            <p style="margin-top: 20px;font-family: italic; font-size: small;">Note:- Generates deployment artifacts(template) for various environment  based on selected  target platform and profile.</p>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="container analyzeData" *ngIf="showAnalyzerData">
-    <div class="row">
-        <div class="col-md-3 register-left">
-        </div>
-        <div class="col-md-9 register-right">
-            <div style="text-align: center;margin-top: 30px;"><p>Migration Compatibility Report : <a (click)="download(reportLocation)" style="color: blue !important; text-decoration-line: underline;cursor: pointer;"><b>{{analyzerReportPath}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></p></div>
-            <div class="table-responsive" style="margin-left: 90px;width: 80%;margin-bottom: 10px;height: 500px;margin-top: 40px;" >
-                <table class="table">
-                    <thead>
-                      <tr class="accordion-toggle collapsed" style="border: 1px solid black;;text-align: center;height: 55px;">
-                       <div class="row">
-                           <div class="rowData"><b>Activity Group</b></div>
-                           <div class="rowData"><b>Activity Name</b></div>
-                           <div class="rowData"><b>Count</b></div>
-                           <div style="width: 25%;padding-top: 10px;height: 55px;overflow: hidden;"><b>Migration Compatibility</b></div>
-                       </div>
-                       </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="accordion-toggle collapsed" style="border: 0.5px solid black;;text-align: center;height: 55px;" *ngFor="let value of (values | sortTable); index as i" (click)="expandRow(i,value.Compatibility[0])" [ngStyle]="{'backgroundColor': value.Compatibility[0] == 'true' ? 'rgb(130 208 147)' : 'rgb(228 131 131)' }">
-                            <div class="row" tooltip="{{value.Compatibility[0] == 'false' ?  ('Suggested Activity:- '+value.SuggestedActivity[0]) : ''}}"  placement="bottom" delay="500">
-                                <div class="rowData"><i *ngIf="value.Compatibility[0] == 'false'" [ngClass]="checkExpanded(i) ? 'fa fa-minus' : 'fa fa-plus'" aria-hidden="true" style="margin-right: 10px;"></i>{{ value.ActivityGroup[0] }}</div>
-                                <div class="rowData">{{ value.ActivityName[0] }}</div>
-                                <div class="rowData">{{ value.Count[0] }}</div>
-                                <div style="width: 25%;padding-top: 10px;height: 50px;overflow: hidden;">{{ value.Compatibility[0] }}</div>
-                            </div>
-                           <div style="height: 20px;padding: 20px;background-color: rgb(11 189 140 / 18%);text-align: center;padding-bottom: 50px;" *ngIf="checkExpanded(i)">Suggested Activity :- <b>{{ value.SuggestedActivity[0] }}</b></div>
-                       </tr>
-                    </tbody>
-                </table>
+    <div *ngIf="showAnalyzerData || showGeneratorData || showMigratorData" style="border-top: 2px solid grey;width: 90%;margin-left: 5%;margin-right: 5%;"></div>
+    <div class="container analyzeData" *ngIf="showAnalyzerData">
+        <div class="row">
+            <div class="col-md-3 register-left">
             </div>
-        </div>
-    </div>
-</div>
-<div class="container analyzeData" *ngIf="showGeneratorData">
-    <div class="row">
-        <div class="col-md-3 register-left">
-        </div>
-        <div class="col-md-9 register-right">
-            <!-- <div style="text-align: center;margin-top: 30px;"><p><b>{{analyzerCompatibility}}</b> data for path location: <b>{{analyzerPathLocation}}</b></p></div> -->
-            <div class="table-responsive"  style="margin-left: 90px;width: 80%;margin-bottom: 10px;height: 200px;margin-top: 40px;" >
-                <table>
-                    <tbody>
-                        <tr style="border: 1px solid black;;text-align: center;height: 80px;">
-                         <div class="row">
-                             <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Status</b></div>
-                             <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;" [ngClass]="[(values['ns0:response']['ns0:status'][0] == 'SUCCESS')  ? 'text-success' : 'text-danger']"><b>{{values["ns0:response"]["ns0:status"][0]}}</b></div>
-                          </div>
-                          <div class="row">
-                             <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;"><b>Deployment Artifact</b></div>
-                             <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;"><a (click)="download(values['ns0:response']['ns0:projectLocation'][0])" style="color: blue !important; text-decoration-line: underline;cursor: pointer;"><b>{{getFilename(values["ns0:response"]["ns0:projectLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
-                          </div>
-                       </tr>
-                     </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="container analyzeData" *ngIf="showMigratorData">
-    <div class="row">
-        <div class="col-md-3 register-left">
-        </div>
-        <div class="col-md-9 register-right">
-            <!-- <div style="text-align: center;margin-top: 30px;"><p><b>{{analyzerCompatibility}}</b> data for path location: <b>{{analyzerPathLocation}}</b></p></div> -->
-            <div class="table-responsive"  style="margin-left: 120px;width: 80%;margin-bottom: 10px;height: 400px;margin-top: 40px;" >
-                <table>
-                    <tbody>
-                       <tr style="border: 1px solid black;;text-align: center;height: 80px;">
+            <div class="col-md-9 register-right">
+                <div style="text-align: center;margin-top: 30px;"><p>Migration Compatibility Report : <a (click)="download(reportLocation)" style="color: blue !important; text-decoration-line: underline;cursor: pointer;"><b>{{analyzerReportPath}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></p></div>
+                <div class="table-responsive" style="margin-left: 90px;width: 80%;margin-bottom: 10px;height: 500px;margin-top: 40px;" >
+                    <table class="table">
+                        <thead>
+                        <tr class="accordion-toggle collapsed" style="border: 1px solid black;;text-align: center;height: 55px;">
                         <div class="row">
-                            <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Status</b></div>
-                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"  [ngClass]="[(values['ns0:response']['ns0:status'][0] == 'SUCCESS')  ? 'text-success' : 'text-danger']"><b>{{values["ns0:response"]["ns0:status"][0]}}</b></div>
-                         </div>
-                         <div class="row" *ngIf="!!values['ns0:response']['ns0:projectLocation']">
-                            <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Migrated Code</b></div>
-                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:projectLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:projectLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
-                         </div>
-                         <div class="row"  *ngIf="!!values['ns0:response']['ns0:codeCleanUpReportLocation']">
-                            <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black; word-wrap: break-word;"><b>Code Cleanup Report</b></div>
-                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:codeCleanUpReportLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:codeCleanUpReportLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
-                         </div>
-                         <div class="row" *ngIf="!!values['ns0:response']['ns0:folderOptimizedReportLocation']">
-                            <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;word-wrap: break-word;"><b>Folder Optimization Report</b></div>
-                            <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:folderOptimizedReportLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:folderOptimizedReportLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
-                         </div>
-                      </tr>
-                    </tbody>
-                </table>
+                            <div class="rowData"><b>Activity Group</b></div>
+                            <div class="rowData"><b>Activity Name</b></div>
+                            <div class="rowData"><b>Count</b></div>
+                            <div style="width: 25%;padding-top: 10px;height: 55px;overflow: hidden;"><b>Migration Compatibility</b></div>
+                        </div>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="accordion-toggle collapsed" style="border: 0.5px solid black;;text-align: center;height: 55px;" *ngFor="let value of (values | sortTable); index as i" (click)="expandRow(i,value.Compatibility[0])" [ngStyle]="{'backgroundColor': value.Compatibility[0] == 'true' ? 'rgb(130 208 147)' : 'rgb(228 131 131)' }">
+                                <div class="row" tooltip="{{value.Compatibility[0] == 'false' ?  ('Suggested Activity:- '+value.SuggestedActivity[0]) : ''}}"  placement="bottom" delay="500">
+                                    <div class="rowData"><i *ngIf="value.Compatibility[0] == 'false'" [ngClass]="checkExpanded(i) ? 'fa fa-minus' : 'fa fa-plus'" aria-hidden="true" style="margin-right: 10px;"></i>{{ value.ActivityGroup[0] }}</div>
+                                    <div class="rowData">{{ value.ActivityName[0] }}</div>
+                                    <div class="rowData">{{ value.Count[0] }}</div>
+                                    <div style="width: 25%;padding-top: 10px;height: 50px;overflow: hidden;">{{ value.Compatibility[0] }}</div>
+                                </div>
+                            <div style="height: 20px;padding: 20px;background-color: rgb(11 189 140 / 18%);text-align: center;padding-bottom: 50px;" *ngIf="checkExpanded(i)">Suggested Activity :- <b>{{ value.SuggestedActivity[0] }}</b></div>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+    <div class="container analyzeData" *ngIf="showGeneratorData">
+        <div class="row">
+            <div class="col-md-3 register-left">
+            </div>
+            <div class="col-md-9 register-right">
+                <!-- <div style="text-align: center;margin-top: 30px;"><p><b>{{analyzerCompatibility}}</b> data for path location: <b>{{analyzerPathLocation}}</b></p></div> -->
+                <div class="table-responsive"  style="margin-left: 90px;width: 80%;margin-bottom: 10px;height: 200px;margin-top: 40px;" >
+                    <table>
+                        <tbody>
+                            <tr style="border: 1px solid black;;text-align: center;height: 80px;">
+                            <div class="row">
+                                <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Status</b></div>
+                                <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;" [ngClass]="[(values['ns0:response']['ns0:status'][0] == 'SUCCESS')  ? 'text-success' : 'text-danger']"><b>{{values["ns0:response"]["ns0:status"][0]}}</b></div>
+                            </div>
+                            <div class="row">
+                                <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;"><b>Deployment Artifact</b></div>
+                                <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;"><a (click)="download(values['ns0:response']['ns0:projectLocation'][0])" style="color: blue !important; text-decoration-line: underline;cursor: pointer;"><b>{{getFilename(values["ns0:response"]["ns0:projectLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
+                            </div>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container analyzeData" *ngIf="showMigratorData">
+        <div class="row">
+            <div class="col-md-3 register-left">
+            </div>
+            <div class="col-md-9 register-right">
+                <!-- <div style="text-align: center;margin-top: 30px;"><p><b>{{analyzerCompatibility}}</b> data for path location: <b>{{analyzerPathLocation}}</b></p></div> -->
+                <div class="table-responsive"  style="margin-left: 120px;width: 80%;margin-bottom: 10px;height: 400px;margin-top: 40px;" >
+                    <table>
+                        <tbody>
+                        <tr style="border: 1px solid black;;text-align: center;height: 80px;">
+                            <div class="row">
+                                <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Status</b></div>
+                                <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"  [ngClass]="[(values['ns0:response']['ns0:status'][0] == 'SUCCESS')  ? 'text-success' : 'text-danger']"><b>{{values["ns0:response"]["ns0:status"][0]}}</b></div>
+                            </div>
+                            <div class="row" *ngIf="!!values['ns0:response']['ns0:projectLocation']">
+                                <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black;"><b>Migrated Code</b></div>
+                                <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:projectLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:projectLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
+                            </div>
+                            <div class="row"  *ngIf="!!values['ns0:response']['ns0:codeCleanUpReportLocation']">
+                                <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;border-bottom: 1px solid black; word-wrap: break-word;"><b>Code Cleanup Report</b></div>
+                                <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;border-bottom: 1px solid black;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:codeCleanUpReportLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:codeCleanUpReportLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
+                            </div>
+                            <div class="row" *ngIf="!!values['ns0:response']['ns0:folderOptimizedReportLocation']">
+                                <div style="width: 30%;padding-top: 10px;height: 80px;border-right: 1px solid black;word-wrap: break-word;"><b>Code Optimization Report</b></div>
+                                <div style="width: 70%;padding-top: 10px;height: 80px;word-wrap: break-word;"><a style="color: blue !important; text-decoration-line: underline;cursor: pointer;" (click)="download(values['ns0:response']['ns0:folderOptimizedReportLocation'][0])"><b>{{getFilename(values["ns0:response"]["ns0:folderOptimizedReportLocation"][0])}}</b><i style="margin-left: 5px;" class="fa fa-download"></i></a></div>
+                            </div>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<footer>
+    <h1 style="color:#052F87"><b>Cognizant</b></h1>
+</footer>
+</body>
+</html>
+    
 <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" template="<img src='assets/spinner.gif'/>"><br>
     <p style="color: white; text-align: center;margin-top: 130px;">Please Wait... </p>  
 </ngx-spinner> 
