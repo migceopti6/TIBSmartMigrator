@@ -39,6 +39,7 @@ export class HomeComponent {
     selectedGeneratorFile:File;
     analyzerReportPath:string;
     reportLocation:any;
+    folderReorganization = true;
     public ANALYZER_URL = 'http://localhost:19093';
     public GENERATOR_URL = 'http://localhost:19092';
     public MIGRATOR_URL = 'http://localhost:19091';
@@ -143,224 +144,224 @@ export class HomeComponent {
     }
   }
 
-    analyze(analyzeData) {
-        this.spinnerService.show();
-        const uploadData = new FormData();
-        uploadData.append('file', this.selectedAnalyzerFile);
-        this.http.post(this.FILE_UPLOAD_URL, uploadData)
-          .subscribe(
-            (res) => {
-              console.log(res);
-                // Send Http request
-                let body = new HttpParams();
-                // body = body.set('codebaseLocation_FormA', analyzeData.codebaseLocation_FormA);
-                body = body.set('codebaseLocation_FormA', this.FILE_UPLOAD_PATH+this.analyzerPath);
-                body = body.set('bwCompatibility', analyzeData.bwCompatibility);
-                
-                this.http.post(this.ANALYZER_URL,body,{ responseType: 'text' })
-                  .subscribe({
-                    next: responseData => {
-                      console.log(responseData);
-                        // this.analyzerPathLocation = analyzeData.codebaseLocation_FormA;
-                        // this.analyzerCompatibility = analyzeData.bwCompatibility;
-                      
-                        const parser = new xml2js.Parser({ strict: false, trim: true });
-                        xml2js.parseString(responseData, {trim: true}, (err, result) => {
-                          if(err){
-                            console.log(err);
-                            Swal.fire('Failure!', "Response format error." , 'error');
-                            this.spinnerService.hide();
-                          }else{
-                            console.log(result);
-                            this.migratorPath = this.analyzerPath;
-                            if(!!result && !!result.response && !!result.response.Rows && !!result.response.Rows[0]){
-                              this.reportLocation = result.response.location[0];
-                              this.analyzerReportPath = this.getFilename(this.reportLocation);
-                              console.log(result.response.Rows[0].root); 
-                              console.log(result.response.Rows[0].root[0].ActivityGroup[0]); 
-                              console.log(result.response.Rows[0].root[0].ActivityName[0]); 
-                              console.log(result.response.Rows[0].root[0].Count[0]); 
-                              console.log(result.response.Rows[0].root[0].Compatibility[0]); 
-                              console.log(result.response.Rows[0].root[0].SuggestedActivity[0]); 
-                              this.values = result.response.Rows[0].root;
-                              this.showAnalyzerData = true;
-                              setTimeout(() => {
-                                window.scrollTo(0, 1500);
-                              }, 10)
-                              this.spinnerService.hide();
-                            }else{
-                              this.showAnalyzerData = false;
-                              this.migratorPath = null;
-                              this.spinnerService.hide();
-                              Swal.fire('Failure!', result , 'error');
-                            }
-                          }
-                        });
-                      },
-                      error: error => {
-                        this.spinnerService.hide();
-                        Swal.fire('Failure!', "Response format error." , 'error');
-                        this.showAnalyzerData = false;
-                        console.log(error.message);
-                      }        
-                  });
-            },
-            (err) => {
-              console.log(err);
-              Swal.fire('Failure!', "File upload failed." , 'error');
-              this.showAnalyzerData = false;
-              this.spinnerService.hide();
-            }
-          );
-    }
-
-    migrate(migrateForm:any){
+  analyze(analyzeData) {
       this.spinnerService.show();
-      let httpHeaders = new HttpHeaders()
-          .set('Content-Type', 'application/x-www-form-urlencoded');
-      let body = new HttpParams();
-      body = body.set('codebaseLocation_FormA', this.FILE_UPLOAD_PATH+this.migratorPath);
-      body = body.set('bwMigration',migrateForm.bwMigration);
-      body = body.set('rvMigration', migrateForm.rvMigration);
-      body = body.set('codeCleanUp',migrateForm.codeCleanUp);
-      body = body.set('ndProcess', (!!migrateForm.ndProcess ? migrateForm.ndProcess : ""));
-      body = body.set('ndResource', (!!migrateForm.ndResource ? migrateForm.ndResource : ""));
-      body = body.set('ndGV', (!!migrateForm.ndGV ? migrateForm.ndGV : ""));
-      body = body.set('ndFolder', (!!migrateForm.ndFolder ? migrateForm.ndFolder : ""));
-      body = body.set('folderReorganization', (!!migrateForm.folderReorganization ? 'false' : 'true'));
-      if(!!this.selectedMigratorFile){
-        const uploadData = new FormData();
-        uploadData.append('file', this.selectedMigratorFile);
-        this.http.post(this.FILE_UPLOAD_URL, uploadData)
-          .subscribe(
-            (res) => {
-              console.log(res);
-              // Send Http request
-              this.http.post(this.MIGRATOR_URL,body,{ responseType: 'text' })
-                .subscribe({
-                  next: responseData => {
-                    console.log(responseData);
-                    const parser = new xml2js.Parser({ strict: false, trim: true });
-                    xml2js.parseString(responseData, {trim: true}, (err, result) => {
-                      if(err){
-                        console.log(err);
-                        Swal.fire('Failure!', responseData , 'error');
-                        this.spinnerService.hide();
-                      } else{
-                        console.log(result);
-                        this.values = result;
-                        this.showMigratorData = true;
-                        setTimeout(() => {
-                          window.scrollTo(0, 1500);
-                        }, 10)
-                        this.spinnerService.hide();
-                      }
-                    });
-                  },
-                  error: error => {
-                    this.spinnerService.hide();
-                    Swal.fire('Failure!', "Response format error." , 'error');
-                    this.showMigratorData = false;
-                    console.log(error.message);
-                  }        
-                });
-            },
-            (err) => {
-              console.log(err);
-              Swal.fire('Failure!', "File upload failed." , 'error');
-              this.showMigratorData = false;
-              this.spinnerService.hide();
-            }
-          );
-      }else{
-         // Send Http request
-         this.http.post(this.MIGRATOR_URL,body,{ responseType: 'text' })
-         .subscribe({
-           next: responseData => {
-             console.log(responseData);
-             const parser = new xml2js.Parser({ strict: false, trim: true });
-             xml2js.parseString(responseData, {trim: true}, (err, result) => {
-               if(err){
-                 console.log(err);
-                 Swal.fire('Failure!', responseData , 'error');
-                 this.spinnerService.hide();
-               } else{
-                 console.log(result);
-                 this.values = result;
-                 this.showMigratorData = true;
-                 this.spinnerService.hide();
-               }
-             });
-           },
-           error: error => {
-             this.spinnerService.hide();
-             Swal.fire('Failure!', "Response format error." , 'error');
-             this.showMigratorData = false;
-             console.log(error.message);
-           }        
-         });
-      }
-      
-    }
-  
-    generate(generateForm) {
-        this.spinnerService.show();
-        const uploadData = new FormData();
-        uploadData.append('file', this.selectedGeneratorFile);
-          // Swal.fire('Success!', "File uploaded successfully" , 'success');
-        this.http.post(this.FILE_UPLOAD_URL, uploadData)
-          .subscribe(
-            (res) => {
-              console.log(res);
+      const uploadData = new FormData();
+      uploadData.append('file', this.selectedAnalyzerFile);
+      this.http.post(this.FILE_UPLOAD_URL, uploadData)
+        .subscribe(
+          (res) => {
+            console.log(res);
               // Send Http request
               let body = new HttpParams();
-              body = body.set('codebaseLocation_FormA',  this.FILE_UPLOAD_PATH+this.generatePath);
-              body = body.set('profileName', generateForm.profileName);
-              body = body.set('bwArtifact', generateForm.bwArtifact);
-
-              this.http.post(this.GENERATOR_URL,body,{ responseType: 'text' })
+              // body = body.set('codebaseLocation_FormA', analyzeData.codebaseLocation_FormA);
+              body = body.set('codebaseLocation_FormA', this.FILE_UPLOAD_PATH+this.analyzerPath);
+              body = body.set('bwCompatibility', analyzeData.bwCompatibility);
+              
+              this.http.post(this.ANALYZER_URL,body,{ responseType: 'text' })
                 .subscribe({
                   next: responseData => {
                     console.log(responseData);
-                    // this.analyzerPathLocation = generateForm.codebaseLocation_FormA;
-                    // this.analyzerCompatibility = generateForm.profileName;
-                    // this.analyzerCompatibility = generateForm.bwArtifact;
-                    const parser = new xml2js.Parser({ strict: false, trim: true });
-                    xml2js.parseString(responseData, {trim: true}, (err, result) => {
-                      if(err){
-                        console.log(err);
-                        Swal.fire('Failure!', responseData , 'error');
-                        this.spinnerService.hide();
-                      } else{
-                        console.log(result);
-                        this.values = result;
-                        this.showGeneratorData = true;
-                        setTimeout(() => {
-                          window.scrollTo(0, 1500);
-                        }, 10)
-                        this.spinnerService.hide();
-                      }
-                    });
-                  },
-                  error: error => {
-                    this.spinnerService.hide();
-                    Swal.fire('Failure!', "Response format error." , 'error');
-                    this.showGeneratorData = false;
-                    console.log(error.message);
-                  }        
+                      // this.analyzerPathLocation = analyzeData.codebaseLocation_FormA;
+                      // this.analyzerCompatibility = analyzeData.bwCompatibility;
+                    
+                      const parser = new xml2js.Parser({ strict: false, trim: true });
+                      xml2js.parseString(responseData, {trim: true}, (err, result) => {
+                        if(err){
+                          console.log(err);
+                          Swal.fire('Failure!', "Response format error." , 'error');
+                          this.spinnerService.hide();
+                        }else{
+                          console.log(result);
+                          this.migratorPath = this.analyzerPath;
+                          if(!!result && !!result.response && !!result.response.Rows && !!result.response.Rows[0]){
+                            this.reportLocation = result.response.location[0];
+                            this.analyzerReportPath = this.getFilename(this.reportLocation);
+                            console.log(result.response.Rows[0].root); 
+                            console.log(result.response.Rows[0].root[0].ActivityGroup[0]); 
+                            console.log(result.response.Rows[0].root[0].ActivityName[0]); 
+                            console.log(result.response.Rows[0].root[0].Count[0]); 
+                            console.log(result.response.Rows[0].root[0].Compatibility[0]); 
+                            console.log(result.response.Rows[0].root[0].SuggestedActivity[0]); 
+                            this.values = result.response.Rows[0].root;
+                            this.showAnalyzerData = true;
+                            setTimeout(() => {
+                              window.scrollTo(0, 1500);
+                            }, 10)
+                            this.spinnerService.hide();
+                          }else{
+                            this.showAnalyzerData = false;
+                            this.migratorPath = null;
+                            this.spinnerService.hide();
+                            Swal.fire('Failure!', result , 'error');
+                          }
+                        }
+                      });
+                    },
+                    error: error => {
+                      this.spinnerService.hide();
+                      Swal.fire('Failure!', "Response format error." , 'error');
+                      this.showAnalyzerData = false;
+                      console.log(error.message);
+                    }        
                 });
-            },
-            (err) => {
-              console.log(err);
-              Swal.fire('Failure!', "File upload failed." , 'error');
-              this.showGeneratorData = false;
-              this.spinnerService.hide();
-            }
-          );
-    }
+          },
+          (err) => {
+            console.log(err);
+            Swal.fire('Failure!', "File upload failed." , 'error');
+            this.showAnalyzerData = false;
+            this.spinnerService.hide();
+          }
+        );
+  }
 
-    logout(){
-      this.authenticationService.logout();
-      this.router.navigate(['/login']);
+  migrate(migrateForm:any){
+    this.spinnerService.show();
+    let httpHeaders = new HttpHeaders()
+        .set('Content-Type', 'application/x-www-form-urlencoded');
+    let body = new HttpParams();
+    body = body.set('codebaseLocation_FormA', this.FILE_UPLOAD_PATH+this.migratorPath);
+    body = body.set('bwMigration',migrateForm.bwMigration);
+    body = body.set('rvMigration', migrateForm.rvMigration);
+    body = body.set('codeCleanUp',migrateForm.codeCleanUp);
+    body = body.set('ndProcess', (!!migrateForm.ndProcess ? migrateForm.ndProcess : ""));
+    body = body.set('ndResource', (!!migrateForm.ndResource ? migrateForm.ndResource : ""));
+    body = body.set('ndGV', (!!migrateForm.ndGV ? migrateForm.ndGV : ""));
+    body = body.set('ndFolder', (!!migrateForm.ndFolder ? migrateForm.ndFolder : ""));
+    body = body.set('folderReorganization', migrateForm.folderReorganization);
+    if(!!this.selectedMigratorFile){
+      const uploadData = new FormData();
+      uploadData.append('file', this.selectedMigratorFile);
+      this.http.post(this.FILE_UPLOAD_URL, uploadData)
+        .subscribe(
+          (res) => {
+            console.log(res);
+            // Send Http request
+            this.http.post(this.MIGRATOR_URL,body,{ responseType: 'text' })
+              .subscribe({
+                next: responseData => {
+                  console.log(responseData);
+                  const parser = new xml2js.Parser({ strict: false, trim: true });
+                  xml2js.parseString(responseData, {trim: true}, (err, result) => {
+                    if(err){
+                      console.log(err);
+                      Swal.fire('Failure!', responseData , 'error');
+                      this.spinnerService.hide();
+                    } else{
+                      console.log(result);
+                      this.values = result;
+                      this.showMigratorData = true;
+                      setTimeout(() => {
+                        window.scrollTo(0, 1500);
+                      }, 10)
+                      this.spinnerService.hide();
+                    }
+                  });
+                },
+                error: error => {
+                  this.spinnerService.hide();
+                  Swal.fire('Failure!', "Response format error." , 'error');
+                  this.showMigratorData = false;
+                  console.log(error.message);
+                }        
+              });
+          },
+          (err) => {
+            console.log(err);
+            Swal.fire('Failure!', "File upload failed." , 'error');
+            this.showMigratorData = false;
+            this.spinnerService.hide();
+          }
+        );
+    }else{
+        // Send Http request
+        this.http.post(this.MIGRATOR_URL,body,{ responseType: 'text' })
+        .subscribe({
+          next: responseData => {
+            console.log(responseData);
+            const parser = new xml2js.Parser({ strict: false, trim: true });
+            xml2js.parseString(responseData, {trim: true}, (err, result) => {
+              if(err){
+                console.log(err);
+                Swal.fire('Failure!', responseData , 'error');
+                this.spinnerService.hide();
+              } else{
+                console.log(result);
+                this.values = result;
+                this.showMigratorData = true;
+                this.spinnerService.hide();
+              }
+            });
+          },
+          error: error => {
+            this.spinnerService.hide();
+            Swal.fire('Failure!', "Response format error." , 'error');
+            this.showMigratorData = false;
+            console.log(error.message);
+          }        
+        });
     }
+    
+  }
+
+  generate(generateForm) {
+      this.spinnerService.show();
+      const uploadData = new FormData();
+      uploadData.append('file', this.selectedGeneratorFile);
+        // Swal.fire('Success!', "File uploaded successfully" , 'success');
+      this.http.post(this.FILE_UPLOAD_URL, uploadData)
+        .subscribe(
+          (res) => {
+            console.log(res);
+            // Send Http request
+            let body = new HttpParams();
+            body = body.set('codebaseLocation_FormA',  this.FILE_UPLOAD_PATH+this.generatePath);
+            body = body.set('profileName', generateForm.profileName);
+            body = body.set('bwArtifact', generateForm.bwArtifact);
+
+            this.http.post(this.GENERATOR_URL,body,{ responseType: 'text' })
+              .subscribe({
+                next: responseData => {
+                  console.log(responseData);
+                  // this.analyzerPathLocation = generateForm.codebaseLocation_FormA;
+                  // this.analyzerCompatibility = generateForm.profileName;
+                  // this.analyzerCompatibility = generateForm.bwArtifact;
+                  const parser = new xml2js.Parser({ strict: false, trim: true });
+                  xml2js.parseString(responseData, {trim: true}, (err, result) => {
+                    if(err){
+                      console.log(err);
+                      Swal.fire('Failure!', responseData , 'error');
+                      this.spinnerService.hide();
+                    } else{
+                      console.log(result);
+                      this.values = result;
+                      this.showGeneratorData = true;
+                      setTimeout(() => {
+                        window.scrollTo(0, 1500);
+                      }, 10)
+                      this.spinnerService.hide();
+                    }
+                  });
+                },
+                error: error => {
+                  this.spinnerService.hide();
+                  Swal.fire('Failure!', "Response format error." , 'error');
+                  this.showGeneratorData = false;
+                  console.log(error.message);
+                }        
+              });
+          },
+          (err) => {
+            console.log(err);
+            Swal.fire('Failure!', "File upload failed." , 'error');
+            this.showGeneratorData = false;
+            this.spinnerService.hide();
+          }
+        );
+  }
+
+  logout(){
+    this.authenticationService.logout();
+    this.router.navigate(['/login']);
+  }
 }
